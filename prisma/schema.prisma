@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique @db.VarChar(255)
+  mot_de_passe String    @db.VarChar(255)
+  role         Role
+  nom          String    @db.VarChar(100)
+  prenom       String    @db.VarChar(100)
+  telephone    String?   @db.VarChar(20)
+  created_at   DateTime  @default(now()) @db.Timestamp
+  client       Client?
+  technicien   Technicien?
+  messages     Message[] @relation("UtilisateurMessages")
+}
+
+model Client {
+  id             Int       @id @default(autoincrement())
+  utilisateur_id Int       @unique
+  adresse        String?   @db.Text
+  utilisateur    Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scooters       Scooter[]
+  reparations    Reparation[]
+}
+
+model Technicien {
+  id                Int                 @id @default(autoincrement())
+  utilisateur_id    Int                 @unique
+  specialite        String?             @db.VarChar(255)
+  disponibilite     Boolean             @default(true)
+  utilisateur       Utilisateur         @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  TechnicienReparation TechnicienReparation[]
+}
+
+model Scooter {
+  id           Int         @id @default(autoincrement())
+  client_id    Int
+  modele       String      @db.VarChar(100)
+  marque       String      @db.VarChar(100)
+  annee        Int?
+  numero_serie String?   @db.VarChar(100)
+  client       Client      @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reparations  Reparation[]
+}
+
+model Reparation {
+  id                  Int                    @id @default(autoincrement())
+  client_id           Int
+  scooter_id          Int
+  description_probleme String?                @db.Text
+  diagnostic_ia       String?                @db.Text
+  estimation_prix     Decimal?               @db.Decimal(10, 2)
+  statut              StatutReparation       @default(a_venir)
+  date_creation       DateTime               @default(now()) @db.Timestamp
+  date_rdv            DateTime?              @db.DateTime
+  client              Client                 @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scooter             Scooter                @relation(fields: [scooter_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  TechnicienReparation TechnicienReparation[]
+  messages            Message[]
+}
+
+model TechnicienReparation {
+  technicien_id Int
+  reparation_id Int
+  technicien    Technicien @relation(fields: [technicien_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reparation    Reparation @relation(fields: [reparation_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([technicien_id, reparation_id])
+}
+
+model Message {
+  id             Int       @id @default(autoincrement())
+  reparation_id  Int
+  expediteur_id  Int
+  contenu        String    @db.Text
+  date           DateTime  @default(now()) @db.Timestamp
+  reparation     Reparation @relation(fields: [reparation_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  expediteur     Utilisateur @relation("UtilisateurMessages", fields: [expediteur_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum Role {
+  client
+  technicien
+  admin
+}
+
+enum StatutReparation {
+  a_venir
+  en_cours
+  termine
+}
