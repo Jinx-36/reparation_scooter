@@ -5,51 +5,63 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export const authOptions = {
-  
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        console.log('Nouveau hash:', hashedPassword);
         const user = await prisma.utilisateur.findUnique({
           where: { email: credentials.email }
         });
-      
+        
         if (!user) return null;
-      
-        // Ajoutez ce log pour débogage
-        //console.log('Mot de passe stocké:', user.mot_de_passe);
-        //console.log('Mot de passe fourni:', credentials.password);
         
-        const passwordValid = await bcrypt.compare(credentials.password, user.mot_de_passe);
+        const passwordValid = await bcrypt.compare(
+          credentials.password,
+          user.mot_de_passe
+        );
         
-        if (!passwordValid) {
-          console.log('Échec de la comparaison des mots de passe');
-          return null;
-        }
-      
-        return { id: user.id, email: user.email, role: user.role };
+        if (!passwordValid) return null;
+        
+        return {
+          id: user.id.toString(),
+          email: user.email,
+          name: `${user.prenom} ${user.nom}`,
+          role: user.role
+        };
       }
     })
   ],
-  session: { strategy: "jwt" },
+  pages: {
+    signIn: '/login',
+    error: '/login'
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60 // 30 jours
+  },
   callbacks: {
-    jwt({ token, user }) {
-      if (user) token.role = user.role;
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+        token.id = user.id; // Ajoute l'id au token
+      }
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       session.user.role = token.role;
+      session.user.id = token?.id;
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return `${baseUrl}/client`;
     }
   }
 };
 
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

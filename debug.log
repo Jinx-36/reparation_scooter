@@ -1,0 +1,62 @@
+
+> reparation-scooter@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.1 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.155:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 596ms
+ ✓ Ready in 1992ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 1478ms
+ GET /api/auth/session 200 in 2284ms
+ ○ Compiling /client/scooters ...
+ ✓ Compiled /client/scooters in 3.2s
+ GET /client/scooters 200 in 3476ms
+ GET /api/auth/session 200 in 141ms
+ ○ Compiling /favicon.ico ...
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 1650ms
+ GET /favicon.ico 200 in 1877ms
+ ✓ Compiled /favicon.ico in 1983ms
+ GET /api/client/scooters/api 404 in 1855ms
+ GET /api/client/scooters/api 404 in 241ms
+ ○ Compiling /client ...
+ ✓ Compiled /client in 1321ms
+ GET /client 200 in 1366ms
+ ○ Compiling /client/reparations/nouvelle ...
+ ✓ Compiled /client/reparations/nouvelle in 1332ms
+ GET /client/reparations/nouvelle 200 in 1372ms
+ GET /api/client/scooters/api 404 in 162ms
+ GET /api/client/scooters/api 404 in 71ms
+ GET /client/scooters 200 in 55ms
+ GET /api/client/scooters/api 404 in 133ms
+ GET /api/client/scooters/api 404 in 172ms
+ GET /client/scooters 200 in 67ms
+ GET /api/auth/session 200 in 99ms
+ GET /favicon.ico 200 in 283ms
+ GET /api/client/scooters/api 404 in 147ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 248ms
+ GET /api/client/scooters/api 404 in 428ms
+ GET /api/auth/session 200 in 54ms
+ GET /client 200 in 39ms
+ GET /client 200 in 75ms
+ GET /api/auth/session 200 in 117ms
+ GET /favicon.ico 200 in 289ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 234ms
+ GET /client/scooters 200 in 44ms
+ GET /api/client/scooters/api 404 in 94ms
+ GET /api/client/scooters/api 404 in 66ms
+ GET /api/client/scooters/api 404 in 65ms
+ GET /api/client/scooters/api 404 in 58ms
+ GET /api/auth/session 200 in 64ms
+ GET /client/scooters 200 in 77ms
+ GET /api/auth/session 200 in 94ms
+ GET /favicon.ico 200 in 293ms
+ GET /api/client/scooters/api 404 in 118ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 252ms
+ GET /api/client/scooters/api 404 in 423ms
+[?25h

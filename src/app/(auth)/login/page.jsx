@@ -4,30 +4,35 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
-export default function Login() {
+export default function LoginPage() {
+  const [email, setEmail] = useState('')
   const router = useRouter();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
+  try {
     const result = await signIn('credentials', {
       email: e.target.email.value,
       password: e.target.password.value,
-      redirect: false
+      redirect: true // Laisse NextAuth gérer la redirection
     });
 
-    setLoading(false);
-    
     if (result?.error) {
-      setError('Email ou mot de passe incorrect');
+      setError('Identifiants incorrects');
     } else {
-      router.push('/dashboard');
+      // La redirection sera gérée par NextAuth (callback redirect dans route.js)
     }
-  };
+  } catch (err) {
+    setError('Erreur de connexion');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">

@@ -8,32 +8,36 @@ export default function ForgotPassword() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setMessage('');
+  // Modifiez la fonction handleSubmit dans forgot-password/page.jsx
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+  setMessage('');
 
-    try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
+  try {
+    const response = await fetch('/api/password/forgot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Erreur lors de la demande");
-      }
-
-      setMessage(data.message);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    // Vérifiez d'abord le statut HTTP
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(errorData || 'Erreur lors de la demande');
     }
-  };
+
+    // Puis parsez le JSON
+    const data = await response.json();
+    setMessage(data.message || 'Lien envoyé avec succès');
+  } catch (err) {
+    // Capture des erreurs de parsing JSON
+    setError(err.message.includes('{') ? "Erreur serveur" : err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">

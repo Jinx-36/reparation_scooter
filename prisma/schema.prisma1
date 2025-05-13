@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Utilisateur {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  mot_de_passe String
-  role        Role     @default(client)
-  nom         String
-  prenom      String
-  telephone   String?
-  created_at  DateTime @default(now())
-  Client      Client?
-  Technicien  Technicien?
-  messages    Message[] @relation("UtilisateurMessages")
+  id           Int       @id @default(autoincrement())
+  email        String    @unique @db.VarChar(255)
+  mot_de_passe String    @db.VarChar(255)
+  role         Role
+  nom          String    @db.VarChar(100)
+  prenom       String    @db.VarChar(100)
+  telephone    String?   @db.VarChar(20)
+  created_at   DateTime  @default(now()) @db.Timestamp
+  client       Client?
+  technicien   Technicien?
+  messages     Message[] @relation("UtilisateurMessages")
 }
 
 model Client {
-  id            Int       @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   utilisateur_id Int       @unique
-  adresse       String?
-  scooters      Scooter[]
-  reparations   Reparation[]
-  utilisateur   Utilisateur @relation(fields: [utilisateur_id], references: [id])
+  adresse        String?   @db.Text
+  utilisateur    Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scooters       Scooter[]
+  reparations    Reparation[]
 }
 
 model Technicien {
@@ -40,13 +40,13 @@ model Technicien {
 }
 
 model Scooter {
-  id           Int       @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   client_id    Int
-  modele       String
-  marque       String
+  modele       String      @db.VarChar(100)
+  marque       String      @db.VarChar(100)
   annee        Int?
-  numero_serie String?
-  client       Client    @relation(fields: [client_id], references: [id])
+  numero_serie String?   @db.VarChar(100)
+  client       Client      @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reparations  Reparation[]
 }
 

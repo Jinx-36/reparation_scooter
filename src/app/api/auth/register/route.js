@@ -27,18 +27,17 @@ export async function POST(request) {
       data: {
         email,
         mot_de_passe: hashedPassword,
-        role: 'client',
         nom,
         prenom,
         telephone,
-        client: {
+        Client: {
           create: {
             adresse
           }
         }
       },
       include: {
-        client: true
+        Client: true
       }
     });
 
